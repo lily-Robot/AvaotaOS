@@ -147,6 +147,7 @@ input_box(){
             bullseye "Debian 11" \
             bookworm "Debian 12" \
             trixie "Debian 13" \
+            kali-rolling "Kali Linux Rolling" \
             2> $temp
         if [ $? == 1 ];then
           exit 2
@@ -225,6 +226,8 @@ input_box(){
             MIRROR=http://ports.ubuntu.com
         elif [[ "${VERSION}" == "bookworm" || "${VERSION}" == "trixie" ]];then
             MIRROR=http://deb.debian.org/debian
+        elif [[ "${VERSION}" == "kali-rolling" ]];then
+            MIRROR=http://http.kali.org/kali
         fi
     fi
     

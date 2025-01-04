@@ -1,0 +1,11 @@
+Types: deb
+URIs: http://http.kali.org/kali
+Suites: kali-rolling
+Components: main contrib non-free
+Signed-By: /usr/share/keyrings/kali-archive-keyring.gpg
+
+Types: deb
+URIs: http://http.kali.org/kali
+Suites: kali-rolling
+Components: main contrib non-free
+Signed-By: /usr/share/keyrings/kali-archive-keyring.gpg

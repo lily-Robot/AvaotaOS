@@ -38,6 +38,8 @@ default_param() {
         MIRROR=http://ports.ubuntu.com
     elif [[ "${VERSION}" == "bookworm" || "${VERSION}" == "trixie" ]];then
         MIRROR=http://deb.debian.org/debian
+    elif [[ "${VERSION}" == "kali-rolling" ]];then
+        MIRROR=http://http.kali.org/kali
     fi
     SYS_USER=avaota
     SYS_PASSWORD=avaota
@@ -168,6 +170,10 @@ elif [[ "${VERSION}" == "bookworm" || "${VERSION}" == "trixie" ]];then
     cat ../os/${VERSION}/apt-list/debian.sources > ${ROOTFS}/etc/apt/sources.list.d/debian.sources
     sed -i "s|http://deb.debian.org/debian|${MIRROR}|g" ${ROOTFS}/etc/apt/sources.list.d/debian.sources
     sed -i "s|VERSION|${VERSION}|g" ${ROOTFS}/etc/apt/sources.list.d/debian.sources
+elif [ "${VERSION}" == "kali-rolling" ];then
+    rm ${ROOTFS}/etc/apt/sources.list
+    cat ../os/${VERSION}/apt-list/kali.sources > ${ROOTFS}/etc/apt/sources.list.d/kali.sources
+    sed -i "s|http://http.kali.org/kali|${MIRROR}|g" ${ROOTFS}/etc/apt/sources.list.d/kali.sources
 fi
 }
 
@@ -240,15 +246,18 @@ sed -i "s|#PermitRootLogin prohibit-password|PermitRootLogin yes|g" ${ROOTFS}/et
 }
 
 setup_dhcp(){
-if [[ "${VERSION}" == "jammy" || "${VERSION}" == "noble" ]];then
+    if [[ "${VERSION}" == "jammy" || "${VERSION}" == "noble" ]]; then
     LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS} netplan set ethernets.eth0.dhcp4=true
     LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS} netplan set ethernets.eth0.dhcp6=true
     LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS} netplan set ethernets.eth1.dhcp4=true
     LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS} netplan set ethernets.eth1.dhcp6=true
     LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS} sudo chmod 600 /etc/netplan/*.yaml
-elif [[ "${VERSION}" == "bookworm" || "${VERSION}" == "trixie" || "${VERSION}" == "bullseye" || "${VERSION}" == "focal" ]];then
+    elif [[ "${VERSION}" == "bookworm" || "${VERSION}" == "trixie" || "${VERSION}" == "bullseye" || "${VERSION}" == "focal" ]]; then
     LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS} apt-get update
-    LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS} apt-get install ifupdown
+    LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS} apt-get install -y ifupdown
+    elif [[ "${VERSION}" == "kali-rolling" ]]; then
+    LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS} apt-get update
+    LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS} apt-get install -y ifupdown
 fi
 }
 
